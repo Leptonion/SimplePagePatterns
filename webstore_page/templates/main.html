@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="{{ url_for('static', filename='styles/main.css') }}" rel="stylesheet" type="text/css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="{{url_for('static', filename='javascripts/main.js')}}"></script>
+
+    <title>Web Store Page</title>
+</head>
+<body>
+
+<div class="grid-container">
+
+  <div class="header">
+    <nav class="navbar">
+      <div class="container-fluid">
+        <span class="navbar-brand"><h3>WebStore</h3></span>
+      </div>
+    </nav>
+    <div class="input-group">
+      <input type="text" class="form-control" onkeydown="searchOnKeyDown()" id="search-input" placeholder="Search..." aria-label="Recipient's username" aria-describedby="button-addon2">
+      <button class="btn" type="button" id="button-addon2" onclick="push_search()">Search</button>
+    </div>
+  </div>
+
+  <div class="menu" id="filters">
+
+      <div class="accordion" id="acordion-form">
+
+      {% for feat in category.filters %}
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acordion-head-{{feat.id}}">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-items-{{feat.id}}" aria-expanded="true" aria-controls="collapse-items-{{feat.id}}">{{feat.title}}</button>
+        </h2>
+        <div id="collapse-items-{{feat.id}}" class="accordion-collapse collapse show" aria-labelledby="acordion-head-{{feat.id}}" data-bs-parent="acordion-form">
+          <div class="accordion-body">
+            {% for param in feat.fparams %}
+            <div class="form-check">
+              <input class="form-check-input" onclick="push_filter('{{ feat.transcription }}', '{{ param.transcription }}')" type="checkbox" id="check-pos-{{ feat.transcription }}-{{ param.transcription }}">
+              <label class="form-check-label" for="check-pos-{{ feat.transcription }}-{{ param.transcription }}">{{param.value}}</label>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      {% endfor %}
+</div>
+
+  </div>
+
+  <div class="main" id="products">
+
+      <div class="container">
+
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3">
+            {% for prod in products %}
+            <div class="col d-flex">
+              <div class="card shadow-sm">
+                <img src="/static/images/{{ prod.pic }}" class="card-img-top">
+                <div class="card-body align-items-end">
+                  <p class="card-text">{{ prod.title }}</p>
+                </div>
+                <div class="card-footer text-body-secondary">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <button type="button" class="btn btn-lg btn-outline-success">Buy</button>
+                        <small class="text-body-secondary">{{ prod.price }}$</small>
+                    </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+
+      </div>
+
+      <div class="container p-5">
+          <nav aria-label="Page navigation">
+              <ul class="pagination justify-content-center">
+                <li class="page-item" id="pagination-back">
+                  <a class="page-link" aria-disabled="true">Previous</a>
+                </li>
+                {% for page in pages %}
+                <li class="page-item"><a class="page-link" onclick="push_page({{ page }})"> {{ page }} </a></li>
+                {% endfor %}
+                <li class="page-item" id="pagination-up">
+                  <a class="page-link">Next</a>
+                </li>
+              </ul>
+          </nav>
+      </div>
+
+  </div>
+
+  <div class="footer" id="footer"></div>
+
+</div>
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+
+<script type="text/javascript" charset="utf-8">
+    function push_filter(keyword, parameter) {
+        url = EnterNewParam(location.href, keyword, parameter)
+        window.location = url
+    }
+
+    function push_search() {
+        url = EnterSearchKeyword(location.href)
+        window.location = url
+    }
+
+    function start() {
+        ChecksActivate(location.search)
+        SearchActivate(location.search)
+        PagesActivate(location.href, {{ pages }})
+    }
+
+    function searchOnKeyDown(){
+        if(event.key === 'Enter'){
+            push_search()
+        }
+    }
+
+    function push_page(page) {
+        url = EnterPage(location.href, page)
+        window.location = url
+    }
+
+    window.onload = start
+</script>
+
+</html>

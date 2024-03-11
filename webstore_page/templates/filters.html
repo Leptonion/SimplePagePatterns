@@ -1,0 +1,22 @@
+
+<div class="accordion" id="acordion-form">
+
+      {% for feat in category.features %}
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acordion-head-{{feat.id}}">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-items-{{feat.id}}" aria-expanded="true" aria-controls="collapse-items-{{feat.id}}">{{feat.title}}</button>
+        </h2>
+        <div id="collapse-items-{{feat.id}}" class="accordion-collapse collapse show" aria-labelledby="acordion-head-{{feat.id}}" data-bs-parent="acordion-form">
+          <div class="accordion-body">
+            {% for param in feat.filters %}
+            <div class="form-check">
+              <input class="form-check-input" onclick="push_filter()" type="checkbox" value="{{param.id}}" id="check-pos-{{param.id}}">
+              <label class="form-check-label" for="check-pos-{{param.id}}">{{param.value}}</label>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      {% endfor %}
+</div>
