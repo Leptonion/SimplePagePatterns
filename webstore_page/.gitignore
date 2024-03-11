@@ -1,0 +1,11 @@
+#venv
+.venv
+venv/
+
+# dbase
+.dbase
+dbase/
+
+# static
+.static
+static/

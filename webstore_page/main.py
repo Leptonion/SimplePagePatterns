@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request
-from sqlalchemy import or_, and_
+from sqlalchemy import or_
 from .db_patterns import Category, Product, ProductParameter, FilterParameter, Filter
 from . import cursor
 
@@ -32,19 +32,17 @@ def first_start():
 
 
 def dot_filters(query, args: dict):
-    """ Get filter args as dict, where key is Filter.transcription, and val is FilterParameter.transcription """
 
-    for key, val in args.items():  # Go to all filter args
-        """ Create subquery where we back a list of Filter.id with Filter.transcription == key """
+    for key, val in args.items():
+
         sub_query = cursor.session.query(Filter.id).filter(Filter.transcription == key).scalar_subquery()
-        """ Create subquery where we back a list of Product.id (from ProductParameter.product_id)
-            with FilterParameter.transcription in val_list and necessary Filter.id"""
         sub_query = cursor.session.query(ProductParameter.product_id).join(FilterParameter)\
             .filter(FilterParameter.feature_id.in_(sub_query),
                     FilterParameter.transcription.in_(val.split(',')))\
             .scalar_subquery()
-        """ Get list of Products from filtered list of ID`s """
+
         query = query.filter(Product.id.in_(sub_query))
+
     return query
 
 

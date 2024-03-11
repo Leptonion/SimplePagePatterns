@@ -58,7 +58,7 @@ class ProductParameter(Base):
 
 class DBConnector:
     def __init__(self):
-        self.engine = create_engine("sqlite:///testfield/dbase/store.db")
+        self.engine = create_engine("sqlite:///webstore_page/dbase/store.db")
         session_factory = sessionmaker(bind=self.engine, autoflush=False, autocommit=False)
         self.session = scoped_session(session_factory)
 
